@@ -1,0 +1,100 @@
+# SRE Backend Arena
+
+## 🚀 Como rodar local com Kubernetes (Minikube)
+
+### Pré-requisitos
+
+* Docker instalado
+* Minikube instalado
+* kubectl instalado
+
+---
+
+## 1. Iniciar Minikube
+
+```bash
+minikube start
+```
+
+---
+
+## 2. Usar Docker do Minikube
+
+```bash
+eval $(minikube docker-env)
+```
+
+---
+
+## 3. Build da imagem
+
+```bash
+docker build -t sre-arena:1.0 .
+```
+
+---
+
+## 4. Deploy no Kubernetes
+
+```bash
+kubectl apply -f deploy.yaml
+kubectl apply -f service.yaml
+```
+
+---
+
+## 5. Verificar pods
+
+```bash
+kubectl get pods
+```
+
+---
+
+## 6. Obter IP do Minikube
+
+```bash
+minikube ip
+```
+
+---
+
+## 7. Acessar aplicação
+
+```bash
+http://<MINIKUBE_IP>:30007/health
+```
+
+Exemplo:
+
+```bash
+curl http://192.168.58.2:30007/health
+```
+
+---
+
+## 📌 Endpoints
+
+* `/health` → status da aplicação
+* `/wizard/:name` → busca personagem
+
+---
+
+## ⚙️ Arquitetura
+
+* Node.js + Express
+* Docker
+* Kubernetes (Minikube)
+* Deployment com 2 réplicas
+* Service NodePort
+* Readiness e Liveness probes
+* Recursos (CPU/Memória) definidos
+* Container rodando como non-root
+
+---
+
+## 📊 Observações
+
+* Aplicação preparada para escalabilidade (replicas)
+* Health checks garantem disponibilidade
+* Recursos controlados via requests/limits
