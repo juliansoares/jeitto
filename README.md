@@ -177,6 +177,7 @@ kubectl get pods
 
 ```bash
 minikube ip
+minikube service sre-arena
 ```
 
 ---
