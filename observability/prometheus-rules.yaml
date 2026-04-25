@@ -1,0 +1,63 @@
+groups:
+  - name: sre-arena-slo-alerts
+    rules:
+      - record: sre_arena:http_requests:rate5m
+        expr: sum(rate(http_requests_total{job="sre-arena"}[5m]))
+
+      - record: sre_arena:http_errors:rate5m
+        expr: sum(rate(http_requests_total{job="sre-arena",status_code=~"5.."}[5m]))
+
+      - record: sre_arena:http_error_rate:5m
+        expr: |
+          sum(rate(http_requests_total{job="sre-arena",status_code=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{job="sre-arena"}[5m]))
+
+      - record: sre_arena:http_latency_p95:5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_ms_bucket{job="sre-arena"}[5m])) by (le)
+          )
+
+      - alert: SreArenaHighErrorRate
+        expr: sre_arena:http_error_rate:5m > 0.01
+        for: 2m
+        labels:
+          severity: warning
+          service: sre-arena
+          slo: availability
+        annotations:
+          summary: "Alta taxa de erro na API sre-arena"
+          description: "A taxa de erro 5xx está acima de 1% nos últimos 5 minutos."
+
+      - alert: SreArenaHighLatencyP95
+        expr: sre_arena:http_latency_p95:5m > 500
+        for: 2m
+        labels:
+          severity: warning
+          service: sre-arena
+          slo: latency
+        annotations:
+          summary: "Latência p95 alta na API sre-arena"
+          description: "A latência p95 está acima de 500ms nos últimos 5 minutos."
+
+      - alert: SreArenaExternalApiErrors
+        expr: sum(rate(external_api_errors_total{job="sre-arena"}[5m])) > 0
+        for: 2m
+        labels:
+          severity: warning
+          service: sre-arena
+        annotations:
+          summary: "Erros na API externa"
+          description: "A aplicação está registrando falhas ao consumir a API externa."
+
+      - alert: SreArenaNoTraffic
+        expr: sum(rate(http_requests_total{job="sre-arena"}[5m])) == 0
+        for: 5m
+        labels:
+          severity: info
+          service: sre-arena
+        annotations:
+          summary: "Sem tráfego na API sre-arena"
+          description: "Nenhuma requisição foi registrada nos últimos 5 minutos."
