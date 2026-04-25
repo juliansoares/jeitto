@@ -198,10 +198,17 @@ curl http://<IP>:30007/metrics
 .
 ├── app.js
 ├── Dockerfile
-├── deploy.yaml
-├── service.yaml
 ├── package.json
-└── README.md
+├── README.md
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+├── observability/
+│   ├── dashboards/
+│   ├── alerts/
+│   └── slo/
+└── .github/
 ```
 
 ---
