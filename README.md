@@ -199,16 +199,16 @@ curl http://<IP>:30007/metrics
 ├── app.js
 ├── Dockerfile
 ├── package.json
+├── package-lock.json
 ├── README.md
+├── .gitignore
 ├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-├── observability/
-│   ├── dashboards/
-│   ├── alerts/
-│   └── slo/
-└── .github/
+│   ├── deploy.yaml
+│   └── service.yaml
+└── observability/
+    ├── prometheus-config.yaml
+    ├── prometheus-deploy.yaml
+    └── prometheus-svc.yaml
 ```
 
 ---
