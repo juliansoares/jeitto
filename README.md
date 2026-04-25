@@ -138,7 +138,7 @@ minikube start
 ---
 
 ### 2. Usar Docker do Minikube
-Buildar imagens diretamente no runtime do cluster e evitar push em registry externo***
+Buildar imagens diretamente no runtime do cluster e evitar push em registry externo
 
 ```bash
 eval $(minikube docker-env)
