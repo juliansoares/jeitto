@@ -187,6 +187,7 @@ minikube service sre-arena
 ```bash
 curl http://<IP>:30007/health
 curl http://<IP>:30007/wizard/harry%20potter
+curl http://<IP>:30007/metrics
 ```
 
 ---
