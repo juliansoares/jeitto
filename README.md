@@ -121,7 +121,7 @@ Cada requisição gera logs com:
 
 ## 🐳 Como rodar local (Minikube)
 
-### Pré-requisitos
+### Pré-requisitos - Instalar
 
 * Docker -> https://docs.docker.com/engine/install/ubuntu/
 * Minikube -> https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download
