@@ -29,9 +29,10 @@ Client → Service (NodePort) → Pods (Deployment) → API Node.js
 * Node.js + Express
 * Docker
 * Kubernetes (Minikube)
+* Prometheus
+* Grafana
 * Axios (HTTP client)
 * Cache em memória
-
 ---
 
 ## ⚙️ Funcionalidades
@@ -221,8 +222,8 @@ kubectl get pods
 
 ```bash
 minikube ip
-minikube service sre-arena (Prometheus)
-minikube service grafana (Grafana)
+minikube service sre-arena 
+minikube service grafana
 ```
 
 ---
@@ -274,9 +275,6 @@ curl http://<IP>:30007/metrics
 
 ## 🚀 Próximos passos (evolução)
 
-* Métricas com Prometheus (`/metrics`)
-* Dashboard Grafana
-* SLO/SLI definidos
 * Circuit breaker
 * Rate limiting client-side
 * CI/CD com GitHub Actions
