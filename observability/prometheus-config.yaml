@@ -25,21 +25,24 @@ data:
       - name: sre-arena-slo-alerts
         rules:
 
-          # =========================
-          # RECORDING RULES (SLO base)
-          # =========================
-
           - record: sre_arena:http_requests:rate5m
-            expr: sum(rate(http_requests_total{job="sre-arena"}[5m]))
+            expr: |
+              sum(rate(http_requests_total{job="sre-arena"}[5m]))
 
           - record: sre_arena:http_errors:rate5m
-            expr: sum(rate(http_requests_total{job="sre-arena",status_code=~"5.."}[5m]))
+            expr: |
+              sum(rate(http_requests_total{job="sre-arena", status_code=~"5.."}[5m])) or vector(0)
 
           - record: sre_arena:http_error_rate:5m
             expr: |
-              sum(rate(http_requests_total{job="sre-arena",status_code=~"5.."}[5m]))
+              (
+                sum(rate(http_requests_total{job="sre-arena", status_code=~"5.."}[5m])) or vector(0)
+              )
               /
-              sum(rate(http_requests_total{job="sre-arena"}[5m]))
+              clamp_min(
+                sum(rate(http_requests_total{job="sre-arena"}[5m])),
+                1
+              )
 
           - record: sre_arena:http_latency_p95:5m
             expr: |
@@ -47,10 +50,6 @@ data:
                 0.95,
                 sum(rate(http_request_duration_ms_bucket{job="sre-arena"}[5m])) by (le)
               )
-
-          # =========================
-          # ALERTAS
-          # =========================
 
           - alert: SreArenaHighErrorRate
             expr: sre_arena:http_error_rate:5m > 0.01
@@ -61,7 +60,7 @@ data:
               slo: availability
             annotations:
               summary: "Alta taxa de erro na API sre-arena"
-              description: "Taxa de erro 5xx acima de 1% nos últimos 5 minutos."
+              description: "Erro 5xx acima de 1% nos últimos 5 minutos."
 
           - alert: SreArenaHighLatencyP95
             expr: sre_arena:http_latency_p95:5m > 500
@@ -75,7 +74,8 @@ data:
               description: "Latência p95 acima de 500ms nos últimos 5 minutos."
 
           - alert: SreArenaExternalApiErrors
-            expr: sum(rate(external_api_errors_total{job="sre-arena"}[5m])) > 0
+            expr: |
+              (sum(rate(external_api_errors_total{job="sre-arena"}[5m])) or vector(0)) > 0
             for: 2m
             labels:
               severity: warning
@@ -85,7 +85,8 @@ data:
               description: "Falhas ao consumir a API externa."
 
           - alert: SreArenaNoTraffic
-            expr: sum(rate(http_requests_total{job="sre-arena"}[5m])) == 0
+            expr: |
+              sum(rate(http_requests_total{job="sre-arena"}[5m])) == 0
             for: 5m
             labels:
               severity: info
@@ -93,7 +94,7 @@ data:
             annotations:
               summary: "Sem tráfego na API sre-arena"
               description: "Nenhuma requisição foi registrada nos últimos 5 minutos."
-              
+
           - alert: SreArenaTargetDown
             expr: up{job="sre-arena"} == 0
             for: 30s
@@ -101,4 +102,3 @@ data:
               severity: critical
             annotations:
               summary: "SRE Arena target down"
-              description: "Prometheus não consegue coletar métricas da aplicação."    
