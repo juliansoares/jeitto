@@ -93,3 +93,12 @@ data:
             annotations:
               summary: "Sem tráfego na API sre-arena"
               description: "Nenhuma requisição foi registrada nos últimos 5 minutos."
+              
+          - alert: SreArenaTargetDown
+            expr: up{job="sre-arena"} == 0
+            for: 30s
+            labels:
+              severity: critical
+            annotations:
+              summary: "SRE Arena target down"
+              description: "Prometheus não consegue coletar métricas da aplicação."    
