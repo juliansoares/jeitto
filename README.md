@@ -114,8 +114,7 @@ Cada requisição gera logs com:
 
 * Retry com backoff exponencial
 * Timeout de chamadas externas
-* Cache com TTL
-* Fallback para cache em caso de falha
+* Cache com TTL para reduzir chamadas externas
 
 ---
 
