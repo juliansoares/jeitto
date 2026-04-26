@@ -273,7 +273,7 @@ curl http://<IP>:30007/metrics
 
 ---
 
-## 🚀 Próximos passos (evolução)
+## 🚀 Próximos passos (PENDENTE)
 
 * Circuit breaker
 * Rate limiting client-side
