@@ -108,6 +108,35 @@ Cada requisição gera logs com:
 * Retornado no header e body
 * Permite rastreamento end-to-end
 
+### Métricas (Prometheus)
+
+A aplicação expõe métricas em /metrics:
+
+* http_requests_total
+* http_request_duration_ms (histograma)
+* external_api_errors_total
+* cache_hits_total
+* cache_misses_total
+
+### Dashboard (Grafana)
+
+Dashboard criado com:
+
+* RPS (Requests por segundo)
+* Error Rate
+* Latência p95
+* Cache hits / misses
+* Chamadas à API externa
+
+### 🚨 Alertas (SLO)
+
+Alertas definidos com base em SLO:
+
+* Alta taxa de erro (>1%)
+* Latência p95 elevada (>500ms)
+* Falhas na API externa
+* Ausência de tráfego
+* Serviço indisponível (target down)
 ---
 
 ## 🔁 Resiliência
@@ -116,6 +145,20 @@ Cada requisição gera logs com:
 * Timeout de chamadas externas
 * Cache com TTL para reduzir chamadas externas
 
+---
+## 🧪 Testes de carga
+
+Utilizado k6 para simulação de carga:
+
+````bash
+k6 run --vus 50 --duration 5m load-test.js
+````
+
+Permite validar:
+
+* Latência
+* Taxa de erro
+* Comportamento sob carga
 ---
 
 ## 🐳 Como rodar local (Minikube)
@@ -161,6 +204,7 @@ kubectl apply -f k8s/service.yaml
 kubectl apply -f observability/prometheus-config.yaml  
 kubectl apply -f observability/prometheus-deploy.yaml  
 kubectl apply -f observability/prometheus-svc.yaml
+kubectl apply -f observability/grafana/grafana.yaml
 ```
 
 ---
@@ -177,7 +221,8 @@ kubectl get pods
 
 ```bash
 minikube ip
-minikube service sre-arena
+minikube service sre-arena (Prometheus)
+minikube service grafana (Grafana)
 ```
 
 ---
@@ -202,13 +247,17 @@ curl http://<IP>:30007/metrics
 ├── package-lock.json
 ├── README.md
 ├── .gitignore
+├── load-test.js
+├── script.sh
 ├── k8s/
 │   ├── deploy.yaml
 │   └── service.yaml
 └── observability/
     ├── prometheus-config.yaml
     ├── prometheus-deploy.yaml
-    └── prometheus-svc.yaml
+    ├── prometheus-svc.yaml
+    └── grafana/
+        └── grafana.yaml
 ```
 
 ---
